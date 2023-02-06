@@ -36,7 +36,7 @@ repos:
         entry: interrogate
         types: [python]
         exclude: ^(docs/conf.py|setup.py|tests/functional/sample)
-        args: [--config=pyproject.toml --vv, -i, --fail-under=75]
+        args: [--config=old.pyproject.toml --vv, -i, --fail-under=75]
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:

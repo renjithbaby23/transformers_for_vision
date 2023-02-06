@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "transformers-for-vision"
 version = "0.1.0"
-description = "Simple computer vision illustrations using transformer models"
+description = ""
 authors = ["Renjith <renjithbaby23@gmail.com>"]
 readme = "README.md"
 packages = [{include = "transformers_for_vision"}]
@@ -10,8 +10,9 @@ packages = [{include = "transformers_for_vision"}]
 python = "^3.10"
 torch = "^1.13.1"
 torchvision = "^0.14.1"
-numpy = "^1.24.1"
-pre-commit = "^3.0.3"
+numpy = "^1.24.2"
+pre-commit = "^3.0.4"
+scikit-learn = "^1.2.1"
 
 
 [build-system]
