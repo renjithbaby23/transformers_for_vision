@@ -3,7 +3,7 @@ import random
 from collections import Counter
 from itertools import cycle
 from pathlib import Path
-from typing import Iterable, Literal, Union
+from typing import Iterable, Literal
 
 from PIL import Image
 from sklearn.preprocessing import LabelEncoder

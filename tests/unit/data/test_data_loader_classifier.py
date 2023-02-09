@@ -38,3 +38,15 @@ def test_dataloader_no_images(image_dir):
     data_loader = DataLoader(image_dir, image_extension="png")
     with pytest.raises(StopIteration):
         next(data_loader)[0]
+
+
+def test_dataloader_infinite(image_dir):
+    """Test classifier dataloader if it is generating infinite data."""
+    data_loader = DataLoader(image_dir)
+
+    # looping two times the number of images present
+    for _ in range(data_loader.n_images * 2):
+        next(data_loader)
+    sample_image = next(data_loader)[0]
+    assert isinstance(sample_image, Image.Image)
+    assert sample_image.size == (224, 224)
