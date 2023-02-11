@@ -30,10 +30,12 @@ class DataLoader(object):
         This implements an infinite data loader.
 
         Args:
-            image_dir: directory containing class directories and images in class directories
+            image_dir: directory containing class directories and images
+                       in class directories
             batch_size: data loader batch size
             image_extension: image file extension
-            image_dim: image dimension to which each input image will be resized
+            image_dim: image dimension to which each input image
+                       will be resized
             shuffle: should shuffle the image order or not
             infinite: should it be an infinite dataloader or finite one
             return_labels: should the dataloader return labels as well
@@ -70,7 +72,9 @@ class DataLoader(object):
             random.shuffle(self.images)
         self.n_images = len(self.images)
 
-        self.class_stats = dict(Counter([img.parent.name for img in self.images]))
+        self.class_stats = dict(
+            Counter([img.parent.name for img in self.images])
+        )
         self.classes = list(self.class_stats.keys())
         self.n_classes = len(self.class_stats)
 
@@ -82,7 +86,9 @@ class DataLoader(object):
 
         le = LabelEncoder()
         le.fit(self.classes)
-        self.class_to_id = {item: le.transform([item])[0] for item in self.classes}
+        self.class_to_id = {
+            item: le.transform([item])[0] for item in self.classes
+        }
         self.id_to_class = {v: k for k, v in self.class_to_id.items()}
 
     def __iter__(self):
@@ -103,7 +109,10 @@ class DataLoader(object):
                 labels.append(self.class_to_id[path.parent.name])
             return images, labels
         else:
-            images = [self.load_images(next(self.pool)) for _ in range(self.batch_size)]
+            images = [
+                self.load_images(next(self.pool))
+                for _ in range(self.batch_size)
+            ]
             return images
 
     def load_images(self, image_path: Path) -> Image.Image:
