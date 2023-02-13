@@ -1,0 +1,5 @@
+outs:
+- md5: a7f5b6a12c3158f8e7b2b4d480820c8a.dir
+  size: 22586077
+  nfiles: 5632
+  path: satellite_image_classification_dataset
