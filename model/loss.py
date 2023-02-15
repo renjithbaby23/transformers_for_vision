@@ -1,9 +1,10 @@
 """Loss implementations."""
-from typing import Literal
+from typing import Literal, Optional
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.autograd import Variable
 
 
 class FocalLoss(nn.Module):
@@ -12,18 +13,23 @@ class FocalLoss(nn.Module):
     def __init__(
         self,
         gamma: float = 2,
+        alpha: Optional[list] = None,
         reduction: Literal["mean", "sum"] = "mean",
     ):
         """Focal loss for multi class.
 
         Args:
             gamma: Focusing parameter
+            alpha: Scaling parameter
             reduction: Specifies the reduction to apply to the output
 
         """
         super(FocalLoss, self).__init__()
         self.gamma = gamma
         self.reduce = reduction
+        self.alpha: Optional[torch.Tensor] = (
+            torch.tensor(alpha) if alpha is not None else None
+        )
 
     def forward(self, x, y):
         """Forward pass."""
@@ -35,6 +41,12 @@ class FocalLoss(nn.Module):
 
         logpt = -F.cross_entropy(x, y, reduction="none")
         pt = torch.exp(logpt)
+
+        if self.alpha is not None:
+            if self.alpha.type() != x.data.type():
+                self.alpha = self.alpha.type_as(x.data)
+            at = self.alpha.gather(0, y.data)
+            logpt = logpt * Variable(at)
 
         loss = -1 * (1 - pt) ** self.gamma * logpt
 
