@@ -128,9 +128,10 @@ class UNet(nn.Module):
         self.down2 = Down(128, 128)
         self.down3 = Down(256, 256)
         factor = 2 if bilinear else 1
+        self.down4 = Down(512, 512 // factor)
 
         self.vit = ViT(
-            image_size=64,
+            image_size=32,
             patch_size=8,
             dim=2048,
             depth=2,
@@ -141,11 +142,12 @@ class UNet(nn.Module):
         self.vit_conv = nn.Conv2d(
             32, 512, kernel_size=1, padding=0
         )  # to increase the number of channels
-        self.vit_linear = nn.Linear(64, 512)
+        self.vit_linear = nn.Linear(64, 1024)
 
-        self.up1 = Up(512, 128 // factor, bilinear)
-        self.up2 = Up(256, 64 // factor, bilinear)
-        self.up3 = Up(128, 32, bilinear)
+        self.up1 = Up(1024, 256 // factor, bilinear)
+        self.up2 = Up(512, 128 // factor, bilinear)
+        self.up3 = Up(256, 64 // factor, bilinear)
+        self.up4 = Up(128, 32, bilinear)
         self.outc = OutConv(64, n_classes)
 
     def forward(self, x):
@@ -155,18 +157,20 @@ class UNet(nn.Module):
         x2 = self.down1(x1)
         x3 = self.down2(x2)
         x4 = self.down3(x3)
+        x5 = self.down4(x4)
 
         # applying Vision Transformer for feature extraction
-        x5 = self.vit(x4)
-        x5 = torch.reshape(x5, (-1, 32, 8, 8))
-        x6 = self.vit_conv(x5)
-        x7 = self.vit_linear(torch.reshape(x6, (-1, 512, 64)))
-        x8 = torch.reshape(x7, (-1, 256, 32, 32))
+        x6 = self.vit(x5)
+        x6 = torch.reshape(x6, (-1, 32, 8, 8))
+        x7 = self.vit_conv(x6)
+        x8 = self.vit_linear(torch.reshape(x7, (-1, 512, 64)))
+        x9 = torch.reshape(x8, (-1, 512, 32, 32))
 
         # up scaling
-        x = self.up1(x8, x3)
-        x = self.up2(x, x2)
-        x = self.up3(x, x1)
+        x = self.up1(x9, x4)
+        x = self.up2(x, x3)
+        x = self.up3(x, x2)
+        x = self.up4(x, x1)
 
         logits = self.outc(x)
         return logits
