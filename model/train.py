@@ -18,7 +18,7 @@ from unet import UNet
 from data.data_loader_segmentation import SegmentationDataset
 from utils.config_parser import parse_config
 from utils.configure_logger import configure_logger
-from utils.metrics import compute_accuracy, compute_dice_score
+from utils.metrics import compute_accuracy
 
 configure_logger()
 logger = logging.getLogger(__name__)
@@ -72,10 +72,8 @@ class Trainer(object):
 
         self.loss_list: list = []
         self.acc_list: list = []
-        self.dice_list: list = []
         self.val_loss_list: list = []
         self.val_acc_list: list = []
-        self.val_dice_list: list = []
 
         self.epoch: int = 0
         self.n_epochs: int = config.n_epochs
@@ -142,13 +140,11 @@ class Trainer(object):
         """Reset training metrics."""
         self.loss_list = []
         self.acc_list = []
-        self.dice_list = []
 
     def _reset_eval(self):
         """Reset validation metrics."""
         self.val_loss_list = []
         self.val_acc_list = []
-        self.val_dice_list = []
 
     def fit(self) -> float:
         """Train loop."""
@@ -162,7 +158,6 @@ class Trainer(object):
             self.optimizer.step()
             self.loss_list.append(loss.cpu().detach().numpy())
             self.acc_list.append(compute_accuracy(y, pred_mask).numpy())
-            self.dice_list.append(compute_dice_score(pred_mask, y).numpy())
 
             logger.info(
                 f"[Epoch {self.epoch}/{self.n_epochs}]"
@@ -170,8 +165,6 @@ class Trainer(object):
                 f"[Loss: {loss.cpu().detach().numpy()} "
                 f"({np.mean(self.loss_list)})]"
             )
-            if batch_i == 2:
-                break
         return np.mean(self.loss_list)
 
     def eval(self) -> float:
@@ -184,9 +177,6 @@ class Trainer(object):
             val_loss = self.criterion(pred_mask, y)
             self.val_loss_list.append(val_loss.cpu().detach().numpy())
             self.val_acc_list.append(compute_accuracy(y, pred_mask).numpy())
-            self.val_dice_list.append(compute_dice_score(pred_mask, y).numpy())
-            if batch_i == 2:
-                break
         return np.mean(self.val_loss_list)
 
     def train(self) -> list[tuple[int, float, float]]:
@@ -194,6 +184,7 @@ class Trainer(object):
         epoch_losses = []
 
         for epoch in range(self.n_epochs):
+            self.epoch += 1
             train_loss = self.fit()
             val_loss = self.eval()
             epoch_losses.append((epoch, val_loss, train_loss))
@@ -212,22 +203,19 @@ class Trainer(object):
     def _log_epoch_summary(self):
         """Log epoch summary."""
         logger.info(
-            "\nepoch {} - loss : {:.5f} - acc : {:.4f} - dice: {:.4f}"
-            "\nval loss : {:.5f} - val acc : {:.4f} - val dice: {:.4f}".format(
+            "\nepoch {} - loss : {:.5f} - acc : {:.4f}"
+            "val loss : {:.5f} - val acc : {:.4f}".format(
                 self.epoch,
                 np.mean(self.loss_list),
                 np.mean(self.acc_list),
-                np.mean(self.dice_list),
                 np.mean(self.val_loss_list),
                 np.mean(self.val_acc_list),
-                np.mean(self.val_dice_list),
             )
         )
 
 
 def plot_loss(losses: list[tuple[int, float, float]]) -> None:
     """Plot training loss."""
-    pass
     loss: np.ndarray = np.array(losses)
     plt.plot(loss[:, 0], loss[:, 1], color="b", linewidth=4)
     plt.plot(loss[:, 0], loss[:, 2], color="r", linewidth=4)
