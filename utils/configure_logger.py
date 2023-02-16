@@ -11,7 +11,7 @@ def configure_logger(
 ) -> None:
     """Configure the logging."""
     if log_path is None:
-        log_path = Path("../.logs/logs.log")
+        log_path = Path("../logs/logs.log")
     handler1: logging.Handler = TimedRotatingFileHandler(
         log_path, when="D", interval=1, backupCount=3
     )
