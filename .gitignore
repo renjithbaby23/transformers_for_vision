@@ -7,6 +7,10 @@ __pycache__/
 .DS_Store
 .idea/
 
+# model files
+*.pt
+*.pth
+
 # C extensions
 *.so
 
