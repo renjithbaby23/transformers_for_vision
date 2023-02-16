@@ -1,0 +1,37 @@
+name: unet_4_stage
+params:
+  lr: 0.001
+  batch_size: 2
+  n_epochs: 10
+
+  unet:
+    n_channels: 3
+    n_classes: 6
+    bilinear: True
+
+  loss:
+    alpha:
+      - 1.0
+      - 2.0
+      - 1.0
+      - 3.0
+      - 1.5
+      - 1.0
+    gamma: 0.75
+
+  optimizer: 'adam'
+  lr_scheduler:
+    enable: True
+    patience: 2
+    factor: 0.75
+    min_lr: 1e-6
+
+  early_stopping:
+    enable: True
+    patience: 4
+    min_delta: 0
+  data:
+    checkpoint: "../artefacts/checkpoint"
+    train_dir: "../artefacts/satellite_image_segmentation_dataset/train"
+    test_dir: "../artefacts/satellite_image_segmentation_dataset/val"
+  resume: "../artefacts/checkpoint/best_model-current-init.pth"
