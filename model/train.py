@@ -85,50 +85,50 @@ class Trainer(object):
     def _build(self):
         """Build model."""
         self.model = UNet(
-            n_channels=config.unet.n_channels,
-            n_classes=config.unet.n_classes,
-            bilinear=config.unet.bilinear,
+            n_channels=self.config.unet.n_channels,
+            n_classes=self.config.unet.n_classes,
+            bilinear=self.config.unet.bilinear,
         )
-        if config.optimizer == "adam":
+        if self.config.optimizer == "adam":
             self.optimizer = torch.optim.Adam(
-                self.model.parameters(), lr=config.lr
+                self.model.parameters(), lr=self.config.lr
             )
         else:
             raise ValueError("Only supports 'adam' optimiser!")
         self.criterion = FocalLoss(
-            gamma=config.loss.gamma, alpha=config.loss.alpha
+            gamma=self.config.loss.gamma, alpha=self.config.loss.alpha
         )
 
     def _set_callbacks(self):
         """Setup callbacks."""
-        if config.lr_scheduler.enable:
+        if self.config.lr_scheduler.enable:
             self.lr_scheduler = LRScheduler(
                 self.optimizer,
-                patience=config.lr_scheduler.patience,
-                min_lr=config.lr_scheduler.min_lr,
-                factor=config.lr_scheduler.factor,
+                patience=self.config.lr_scheduler.patience,
+                min_lr=self.config.lr_scheduler.min_lr,
+                factor=self.config.lr_scheduler.factor,
             )
-        if config.early_stopping.enable:
+        if self.config.early_stopping.enable:
             self.early_stopping = EarlyStopping(
-                patience=config.early_stopping.patience,
-                min_delta=config.early_stopping.min_delta,
+                patience=self.config.early_stopping.patience,
+                min_delta=self.config.early_stopping.min_delta,
             )
         self.save_best = SaveBestModel(self.save_dir)
 
     def _set_dataloaders(self):
         """Get dataloaders."""
         self.train_dataloader = get_dataloaders(
-            Path(config.data.train_dir),
+            Path(self.config.data.train_dir),
             shuffle=True,
             transform=get_transforms(),
         )
         self.test_dataloader = get_dataloaders(
-            Path(config.data.test_dir), shuffle=False, transform=None
+            Path(self.config.data.test_dir), shuffle=False, transform=None
         )
 
         # load previous checkpoint
-        if config.resume is not None:
-            checkpoint_path = Path(config.resume)
+        if self.config.resume is not None:
+            checkpoint_path = Path(self.config.resume)
             logger.info(f"Resuming from checkpoint - {checkpoint_path}")
             try:
                 self.model.load_state_dict(torch.load(checkpoint_path))
