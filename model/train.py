@@ -33,8 +33,10 @@ def get_transforms() -> transforms.Compose:
         brightness=0.2, contrast=0.2, saturation=0.2
     )
     blurriness = transforms.GaussianBlur(3, sigma=(0.1, 2.0))
+    sharpened = transforms.RandomAdjustSharpness(0.2, 0.4)
+    contrast = transforms.RandomAutocontrast(0.4)
 
-    return transforms.Compose([color_shift, blurriness])
+    return transforms.Compose([color_shift, blurriness, sharpened, contrast])
 
 
 def get_dataloaders(
@@ -224,18 +226,18 @@ def plot_loss(losses: list[tuple[int, float, float]]) -> None:
     plt.ylabel("loss", fontsize=20)
     plt.grid()
     plt.legend(["training", "validation"])
-    plt.savefig("artefacts/checkpoint/loss.png")
+    plt.savefig("../artefacts/checkpoint/loss.png")
 
 
 if __name__ == "__main__":
     config_path = Path("../config/model")
     config_name = "unet"
 
-    config = parse_config(config_path, config_name)
+    cfg = parse_config(config_path, config_name)
     logger.info("Starting training with the following configuration:")
-    logger.info(OmegaConf.to_yaml(config))
+    logger.info(OmegaConf.to_yaml(cfg))
 
-    trainer = Trainer(config)
+    trainer = Trainer(cfg)
     losses = trainer.train()
 
     plot_loss(losses=losses)

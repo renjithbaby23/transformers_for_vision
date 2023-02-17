@@ -132,9 +132,7 @@ def inference_on_single_image(
 
 
 if __name__ == "__main__":
-    checkpoint_path = Path(
-        "../artefacts/checkpoint/best_model-current-init.pth"
-    )
+    checkpoint_path = Path("../artefacts/checkpoint/best_model.pth")
     model = load_model(checkpoint_path)
 
     infer_on_val_data = True
