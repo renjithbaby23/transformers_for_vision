@@ -55,13 +55,7 @@ class SegmentationDataset(Dataset):
         self.id_to_class: dict = {v: k for k, v in self.class_to_id.items()}
 
         self.pre_process: transforms.transforms.Compose = transforms.Compose(
-            [
-                transforms.Resize(self.image_size),
-                transforms.ToTensor(),
-                transforms.Normalize(
-                    mean=(0.4914, 0.4822, 0.4465), std=(0.2023, 0.1994, 0.2010)
-                ),
-            ]
+            [transforms.Resize(self.image_size), transforms.ToTensor()]
         )
 
     def __getitem__(self, idx: int) -> tuple[torch.Tensor, torch.Tensor]:
@@ -88,18 +82,11 @@ class SegmentationDataset(Dataset):
         mask = np.array(mask)
         cls_mask = np.zeros(mask.shape)
 
-        cls_mask[mask == self.RGB_classes["Water"]] = self.class_to_id["Water"]
-        cls_mask[mask == self.RGB_classes["Land"]] = self.class_to_id["Land"]
-        cls_mask[mask == self.RGB_classes["Road"]] = self.class_to_id["Road"]
-        cls_mask[mask == self.RGB_classes["Building"]] = self.class_to_id[
-            "Building"
-        ]
-        cls_mask[mask == self.RGB_classes["Vegetation"]] = self.class_to_id[
-            "Vegetation"
-        ]
-        cls_mask[mask == self.RGB_classes["Unlabeled"]] = self.class_to_id[
-            "Unlabeled"
-        ]
+        for class_ in self.class_to_id.keys():
+            cls_mask[mask == self.RGB_classes[class_]] = self.class_to_id[
+                class_
+            ]
+
         cls_mask = cls_mask[:, :, 0]
 
         if self.train and self.transform is not None:
