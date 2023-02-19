@@ -11,6 +11,46 @@ This repo contains some sample codes for doing certain vision related tasks.
 7. Sample `automated hyperparameter tuning` script using Optuna
 
 
+### Sample predictions:
+
+First image is the actual image resized to 512 X 512,
+ second image is the ground truth mask,
+and the third one is the model predicted mask.
+
+
+    Dice score : 0.8472
+
+
+
+
+![png](./artefacts/readme_images/sample_predictions_4_5.png)
+
+
+
+    Dice score : 0.5612
+
+
+
+
+![png](./artefacts/readme_images/sample_predictions_4_7.png)
+
+
+
+    Dice score : 0.9517
+
+
+
+
+![png](./artefacts/readme_images/sample_predictions_4_9.png)
+
+
+
+Note: *The current model is trained from scratch for 10 epochs
+on MacBook air M1 with just 64 training images and 8 validation images.
+The results can be improved by training the model for longer and
+also with some minimal hyperparameter tuning.*
+
+
 ### Off the shelf tools and components used:
 
 - Programming Language
