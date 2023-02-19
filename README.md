@@ -53,45 +53,39 @@ also with some minimal hyperparameter tuning.*
 
 ### Off the shelf tools and components used:
 
-- Programming Language
-<br />
+- Programming Language: \
 Python 3.10
-- Neural Network framework:
-<br />
+
+- Neural Network framework: \
 PyTorch 1.13
-- Environment reproducibility:
-<br />
+
+- Environment reproducibility: \
 [Poetry](https://python-poetry.org/)
-- Configuration management:
-<br />
+
+- Configuration management: \
   [Hydra](https://hydra.cc/docs/intro/)
-- Static Code quality checks:
-<br />
+
+- Static Code quality checks: \
 [pre-commit](https://pre-commit.com/)
-<br />
    - Black
    - Flake8
    - isort
    - pydocstring
    - mypy
    - Makefile
-- Unit test:
-<br />
+- Unit test: \
 [pytest](https://docs.pytest.org/en/7.2.x/)
-- Code version control:
-<br />
+
+- Code version control: \
 git
 
-- Data and model version control:
-<br />
+- Data and model version control: \
 [dvc](https://dvc.org/)
 
-- Logging:
-<br />
+- Logging: \
 Python logging module
 
-- Hyper Parameter Tuning:
-<br />
+- Hyper Parameter Tuning: \
 [Optuna](https://optuna.org/)
 
 
