@@ -11,6 +11,20 @@ This repo contains some sample codes for doing certain vision related tasks.
 7. Sample `automated hyperparameter tuning` script using Optuna
 
 
+### HOW TO:
+1. Clone this repo
+2. Install the requirements using [poetry](https://python-poetry.org/docs/basic-usage/) (pip will also work)
+3. Pull data and trained model form DVC \
+*Currently the DVC is pointing to my personal Google Drive directory and might note be available for all.
+Please reach out to me if you need the files.*
+4. For training the model;
+   1. Modify the configuration file in `./config/model/unet.yaml`
+   2. Run the `./train.py`
+5. For inference;
+   1. Refer the script `./infer.py`
+6. For parameter tuning;
+   1. Refer the script `./tune_parameters.py`
+
 ### Sample predictions:
 
 First image is the actual image resized to 512 X 512,
