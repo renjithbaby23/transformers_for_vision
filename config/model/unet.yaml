@@ -31,7 +31,7 @@ params:
     patience: 4
     min_delta: 0
   data:
-    checkpoint: "../artefacts/checkpoint"
-    train_dir: "../artefacts/satellite_image_segmentation_dataset/train"
-    test_dir: "../artefacts/satellite_image_segmentation_dataset/val"
-  resume: "../artefacts/checkpoint/best_model.pth"
+    checkpoint: "./artefacts/checkpoint"
+    train_dir: "./artefacts/satellite_image_segmentation_dataset/train"
+    test_dir: "./artefacts/satellite_image_segmentation_dataset/val"
+  resume: "./artefacts/checkpoint/best_model.pth"

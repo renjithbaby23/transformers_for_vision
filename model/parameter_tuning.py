@@ -51,13 +51,9 @@ def objective(trial) -> float:
 
 
 def run_study():
-    """Optimisation."""
+    """Optimisation of the objective function."""
     logger.info("Starting optuna hyper parameter tuning.")
     study = optuna.create_study(
         direction="minimize", sampler=optuna.samplers.TPESampler()
     )
-    study.optimize(objective, n_trials=50)
-
-
-if __name__ == "__main__":
-    run_study()
+    study.optimize(objective, n_trials=10)

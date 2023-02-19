@@ -7,16 +7,15 @@ from typing import Optional
 
 import numpy as np
 import torch
-from callbacks import EarlyStopping, LRScheduler, SaveBestModel
-from loss import FocalLoss
 from matplotlib import pyplot as plt
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from unet import UNet
 
 from data.data_loader_segmentation import SegmentationDataset
-from utils.config_parser import parse_config
+from model.callbacks import EarlyStopping, LRScheduler, SaveBestModel
+from model.loss import FocalLoss
+from model.unet import UNet
 from utils.configure_logger import configure_logger
 from utils.metrics import compute_accuracy
 
@@ -226,18 +225,6 @@ def plot_loss(losses: list[tuple[int, float, float]]) -> None:
     plt.ylabel("loss", fontsize=20)
     plt.grid()
     plt.legend(["training", "validation"])
-    plt.savefig("../artefacts/checkpoint/loss.png")
-
-
-if __name__ == "__main__":
-    config_path = Path("../config/model")
-    config_name = "unet"
-
-    cfg = parse_config(config_path, config_name)
-    logger.info("Starting training with the following configuration:")
-    logger.info(OmegaConf.to_yaml(cfg))
-
-    trainer = Trainer(cfg)
-    losses = trainer.train()
-
-    plot_loss(losses=losses)
+    save_path = "./artefacts/checkpoint/loss.png"
+    logger.info(f"Saving the loss plot in {save_path}")
+    plt.savefig(save_path)

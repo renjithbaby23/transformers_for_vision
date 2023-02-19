@@ -7,6 +7,10 @@ __pycache__/
 .DS_Store
 .idea/
 
+# logs
+*.log
+*.log.*
+
 # model files
 *.pt
 *.pth

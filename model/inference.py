@@ -9,9 +9,8 @@ from matplotlib import pyplot as plt
 from PIL import Image
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from unet import UNet
 
-from data.data_loader_segmentation import SegmentationDataset
+from model.unet import UNet
 from utils.configure_logger import configure_logger
 from utils.metrics import compute_dice_score
 
@@ -129,31 +128,3 @@ def inference_on_single_image(
         plt.subplot(1, 2, 2)
         plt.imshow(mask)
         plt.show()
-
-
-if __name__ == "__main__":
-    checkpoint_path = Path("../artefacts/checkpoint/best_model.pth")
-    model = load_model(checkpoint_path)
-
-    infer_on_val_data = True
-    infer_on_single_image = False
-
-    if infer_on_val_data:
-        test_dir = Path(
-            "../artefacts/satellite_image_segmentation_dataset/val"
-        )
-        test_dataset = SegmentationDataset(test_dir)
-        test_dataloader = DataLoader(
-            test_dataset, batch_size=1, shuffle=True, num_workers=0
-        )
-
-        inference_on_dataloader(model, test_dataloader, plot=True)
-
-    if infer_on_single_image:
-        # sample image path
-        image_path = Path(
-            "../artefacts/satellite_image_segmentation_dataset/"
-            "val/Tile 1/images/image_part_009.jpg"
-        )
-
-        inference_on_single_image(model, image_path, plot=True)
